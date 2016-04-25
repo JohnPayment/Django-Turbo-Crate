@@ -13,5 +13,6 @@ urlpatterns = [
    url(r'^logout/', 'fileServer.views.authLogout'),
    url(r'^signup/', 'fileServer.views.authSignup'),
    url(r'^uploadFile/', 'fileServer.views.managerView'),
+   url(r'^downloadFile/', 'fileServer.views.downloadFile'),
    url(r'^$', 'fileServer.views.managerView'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

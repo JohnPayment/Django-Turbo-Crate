@@ -7,11 +7,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
 from django.template import RequestContext
+from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from wsgiref.util import FileWrapper
 
 from fileServer.models import Document
 from fileServer.forms import DocumentForm
+
+import os.path
 
 # Displays the login page
 def loginView(request):
@@ -86,3 +90,17 @@ def managerView(request):
             {'documents': documents, 'form': form},
             context_instance=RequestContext(request)
         )
+
+@login_required(login_url='/login/')
+def downloadFile(request):
+	fileName = request.GET.get('f', 'nope')
+	filePath = 'media/' + fileName
+	print file(filePath)
+
+	if os.path.isfile(filePath):
+		wrapper = FileWrapper(file(filePath))
+		response = HttpResponse(wrapper, content_type='text/plain')
+		response['Content-Length'] = os.path.getsize(filePath)
+		return response
+	else:
+		return redirect('/')
